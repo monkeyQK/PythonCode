@@ -1,5 +1,8 @@
 import pymssql as mssql
 from xlwt import Workbook
+from xlwt import XFStyle
+from xlwt import Font
+from xlwt import Alignment
 import csv
 import os
 import pandas as pd
@@ -124,19 +127,16 @@ def fetch_sqlname():  # 遍历SQL文件
     return L
 
 
-def list2xls(sql_file, cur):  # list类型数据转为xls文件
-    sql = read_sql(sql_file[0])
-    sql = sql.format("'2018-4-1'", "'2018-5-1'")
+def list2xls(cur, sql, xls_name):  # list类型数据转为xls文件
     result = query_data(cur, sql)
-    xls_name = str(sql_file[1]).replace(".sql", "")
     print("写入数据中>>")
-    workbook = Workbook()
+    workbook = Workbook(style_compression=2)
     sheet = workbook.add_sheet('sheet1')
     row = 0
     for line in result:
         cols = 0
         for i in line:
-            sheet.write(row, cols, i)
+            sheet.write(row, cols, i, def_style())
             cols += 1
         row += 1
     workbook.save(
@@ -151,22 +151,43 @@ def main():
         print("数据库连接成功>>")
         sql_file_list = fetch_sqlname()
         for sql_file in sql_file_list:
+            sql = read_sql(sql_file[0])
+            sql = sql.format("'2018-4-1'", "'2018-5-1'")
+            # print(sql)
+            xls_name = str(sql_file[1]).replace(".sql", "")
             # list2csv2xls(sql_file, cur)
-            list2xls(sql_file, cur)
+            list2xls(cur, sql, xls_name)
         print("全部写入完毕！")
         conn.close()
     else:
         print(database_config(host, user, password, database)[1])
 
 
-def list2csv2xls(sql_file, cur):
-    sql = read_sql(sql_file[0])
-    sql = sql.format("'2018-4-1'", "'2018-5-1'")
+def list2csv2xls(cur, sql, xls_name):
+    # sql = read_sql(sql_file[0])
+    # sql = sql.format("'2018-4-1'", "'2018-5-1'")
     result = query_data(cur, sql)
     input_file = r"E:/work/py_sql/temp.csv"
     write_csv(input_file, result)
-    csv_to_xlsx(input_file, str(sql_file[1]).replace(".sql", ""))
+    csv_to_xlsx(input_file, xls_name)
     del_csv(input_file)
+
+
+def def_style():
+    style = XFStyle()
+    font = Font()  # 这部分设置字体
+    font.name = 'Times New Roman'  # 或者换成外面传进来的参数，这样可以使一个函数定义所有style
+    # font.bold = 'True'
+    # font.height = 24
+    # font.size = 2000
+    # font.colour_index = 3
+    style.font = font
+    alignment = Alignment()  # 这部分设置居中格式
+    alignment.horz = Alignment.HORZ_CENTER  # 水平居中
+    alignment.vert = Alignment.VERT_CENTER  # 垂直居中
+    style.alignment = alignment
+
+    return style
 
 
 if __name__ == '__main__':
