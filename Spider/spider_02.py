@@ -23,7 +23,6 @@ class downloader(object):
         # 存放章节数
         self.nums = 0
 
-
     def get_contents(self, target):
         # 发送get请求
         req = requests.get(url=target)
@@ -33,12 +32,11 @@ class downloader(object):
         bf = BeautifulSoup(html, "html.parser")
         # 查找div标签 属性为showtxt的
         texts = bf.find_all('div', class_='showtxt')
-        #替换8个空格为换行
-        texts_finnal = texts[0].text.replace('\xa0'*8, '\n\n')
+        # 替换8个空格为换行
+        texts_finnal = texts[0].text.replace('\xa0' * 8, '\n\n')
         return texts_finnal
 
     # 获取下载地址
-
 
     def get_download_url(self):
         req = requests.get(url=self.target)
@@ -47,16 +45,15 @@ class downloader(object):
         div = div_bf.find_all('div', class_='listmain')
         a_bf = BeautifulSoup(str(div[0]), "html.parser")
         a = a_bf.find_all('a')
-        #设置需要下载的章节
-        #self.nums = len(a[13:])#从第13章开始
+        # 设置需要下载的章节
+        # self.nums = len(a[13:])#从第13章开始
         self.nums = len(a[13:24])
         for each in a[13:24]:
             self.names.append(each.string)
             self.urls.append(self.server + each.get("href"))
 
-
     def writer(self, name, path, text):
-        write_flag = True
+        # write_flag = True
         with open(path, 'a', encoding='utf-8') as f:
             f.write(name + '\n')
             f.writelines(text)

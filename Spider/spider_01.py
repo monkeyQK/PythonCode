@@ -1,5 +1,5 @@
-#如果有pip，直接pip install request.
-#如果没有，先下载源码包，解压到python目录下后进入，找到setup.py，然后python setup.py install
+# 如果有pip，直接pip install request.
+# 如果没有，先下载源码包，解压到python目录下后进入，找到setup.py，然后python setup.py install
 
 import requests
 

@@ -1,7 +1,7 @@
 from xlwt import Workbook
 
 
-def list2xls(li):
+def list2xls(li, xls_name):
     workbook = Workbook()
     sheet = workbook.add_sheet('sheet1')
     row = 0
@@ -11,7 +11,7 @@ def list2xls(li):
             sheet.write(row, cols, i)
             cols += 1
         row += 1
-    workbook.save(r'test.xls')
+    workbook.save(r'{}.xls'.format(xls_name))
 
 
 def main():
